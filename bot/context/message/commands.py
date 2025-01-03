@@ -107,7 +107,7 @@ async def _teams(ctx: MessageContext, args: str = None):
 	await bot.commands.show_teams(ctx)
 
 
-@message_command('ready', 'r')
+@message_command('ready', 'r', 'ㄱ')
 async def _ready(ctx: MessageContext, args: str = None):
 	await bot.commands.set_ready(ctx, is_ready=True)
 
@@ -157,7 +157,7 @@ async def _pick(ctx: MessageContext, args: str = None):
 	await bot.commands.pick(ctx, players=members)
 
 
-@message_command('report_loss', 'rl')
+@message_command('report_loss', 'rl', '기')
 async def _rl(ctx: MessageContext, args: str = None):
 	await bot.commands.report(ctx, result='loss')
 
@@ -227,26 +227,26 @@ async def _lastgame(ctx: MessageContext, args: str = None):
 		await bot.commands.last_game(ctx, queue=args)
 
 
-@message_command('cancel_match')
+@message_command('cancel_match', 'match_cancel')
 async def _cancel_match(ctx: MessageContext, args: str = None):
 	if not args or not args.isdigit():
 		raise bot.Exc.SyntaxError(f"Usage: {ctx.qc.cfg.prefix}cancel_match __match_id__")
 	await bot.commands.report_admin(ctx, match_id=int(args), abort=True)
 
 
-@message_command('promote')
+@message_command('promote', 'promo')
 async def _promote(ctx: MessageContext, args: str = None):
 	await bot.commands.promote(ctx, args)
 
 
-@message_command('set_channel_cfg')
+@message_command('set_channel_cfg', 'cfg_channel_set')
 async def _set_qc_cfg(ctx: MessageContext, args: str = None):
 	if not args:
 		raise bot.Exc.SyntaxError(f"Usage: {ctx.qc.cfg.prefix}set_channel_cfg __json__")
 	await bot.commands.set_qc_cfg(ctx, args.strip())
 
 
-@message_command('set_queue_cfg')
+@message_command('set_queue_cfg', 'cfg_queue_set')
 async def _set_queue_cfg(ctx: MessageContext, args: str = ""):
 	if len(args := args.split(" ", maxsplit=1)) != 2:
 		raise bot.Exc.SyntaxError(f"Usage: {ctx.qc.cfg.prefix}set_queue_cfg __queue__ __json__")

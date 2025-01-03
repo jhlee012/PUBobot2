@@ -48,9 +48,9 @@ def error_embed(description, title='Error'):
 
 def ok_embed(description, title='Success'):
 	if title:
-		return Embed(title=title, description=description, color=0x32cd32)
+		return Embed(title=title, description=description, color=0x00FFFF)
 	else:
-		return Embed(description=description, color=0x32cd32)
+		return Embed(description=description, color=0x00FFFF)
 
 
 def format_channel(string, guild):

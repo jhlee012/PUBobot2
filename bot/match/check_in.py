@@ -9,7 +9,7 @@ from core.console import log
 
 class CheckIn:
 
-	READY_EMOJI = "☑"
+	READY_EMOJI = "<:verification2:947510956798382160>"
 	NOT_READY_EMOJI = "⛔"
 	INT_EMOJIS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6⃣", "7⃣", "8⃣", "9⃣"]
 
@@ -19,6 +19,7 @@ class CheckIn:
 		self.allow_discard = self.m.cfg['check_in_discard']
 		self.ready_players = set()
 		self.message = None
+		self.notif = None
 
 		for p in (p for p in self.m.players if p.id in bot.auto_ready.keys()):
 			self.ready_players.add(p)
@@ -42,10 +43,13 @@ class CheckIn:
 				await self.finish(ctx)
 
 	async def start(self, ctx):
+		calltext = "Notif : " +", ".join((f" \u200b <@{p.id}>" for p in self.m.players))
+		self.notif = await ctx.channel.send(calltext)
+
 		text = f"!spawn message {self.m.id}"
 		self.message = await ctx.channel.send(text)
 
-		emojis = [self.READY_EMOJI, '🔸', self.NOT_READY_EMOJI] if self.allow_discard else [self.READY_EMOJI]
+		emojis = [self.READY_EMOJI, self.NOT_READY_EMOJI] if self.allow_discard else [self.READY_EMOJI]
 		emojis += [self.INT_EMOJIS[n] for n in range(len(self.maps))]
 		try:
 			for emoji in emojis:
@@ -74,6 +78,7 @@ class CheckIn:
 			order.sort(key=lambda n: len(self.map_votes[n]), reverse=True)
 			self.m.maps = [self.maps[n] for n in order[:self.m.cfg['map_count']]]
 		await self.message.delete()
+		await self.notif.delete()
 
 		for p in (p for p in self.m.players if p.id in bot.auto_ready.keys()):
 			bot.auto_ready.pop(p.id)
@@ -107,7 +112,7 @@ class CheckIn:
 
 	async def set_ready(self, ctx, member, ready):
 		if self.m.state != self.m.CHECK_IN:
-			raise bot.Exc.MatchStateError(self.m.gt("The match is not on the check-in stage."))
+			raise bot.Exc.MatchStateError(self.m.gt("The match is not on the check-in stage.\n이 매치는 현재 체크인 단계가 아닙니다. "))
 		if ready:
 			self.ready_players.add(member)
 			await self.refresh(ctx)
@@ -119,6 +124,7 @@ class CheckIn:
 	async def abort_member(self, ctx, member):
 		bot.waiting_reactions.pop(self.message.id)
 		await self.message.delete()
+		await self.notif.delete()
 		await ctx.notice("\n".join((
 			self.m.gt("{member} has aborted the check-in.").format(member=f"<@{member.id}>"),
 			self.m.gt("Reverting {queue} to the gathering stage...").format(queue=f"**{self.m.queue.name}**")
@@ -132,6 +138,7 @@ class CheckIn:
 		if self.message:
 			bot.waiting_reactions.pop(self.message.id, None)
 			try:
+				await self.notif.delete()
 				await self.message.delete()
 			except DiscordException:
 				pass

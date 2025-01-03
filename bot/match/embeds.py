@@ -17,7 +17,7 @@ class Embeds:
 
 	def check_in(self, not_ready):
 		embed = Embed(
-			colour=Colour(0xf5d858),
+			colour=Colour(0x00ffff),
 			title=self.m.gt("__**{queue}** is now on the check-in stage!__").format(
 				queue=self.m.queue.name[0].upper()+self.m.queue.name[1:]
 			)

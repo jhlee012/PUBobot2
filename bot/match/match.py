@@ -369,6 +369,7 @@ class Match:
 				n += 1
 		msg += "```"
 		await ctx.notice(msg)
+		await ctx.channel.send("**Reminder : 1st Player of the match must post Result Screen in <#777792671548178442>**")
 
 	async def final_message(self, ctx):
 		#  Embed message with teams
